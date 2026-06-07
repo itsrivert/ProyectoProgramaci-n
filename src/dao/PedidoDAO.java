@@ -11,5 +11,4 @@ public interface PedidoDAO {
     /** Todos los pedidos con datos de cliente y disco (un JOIN). */
     List<PedidoDTO> listarTodos() throws SQLException;
     void eliminar(int id) throws SQLException;
-    void actualizarEstado(int id, String nuevoEstado) throws SQLException;
 }
