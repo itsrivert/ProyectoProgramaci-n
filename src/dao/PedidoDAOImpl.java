@@ -23,7 +23,6 @@ public class PedidoDAOImpl implements PedidoDAO {
             ps.setInt(1, pedido.getClienteId());
             ps.setInt(2, pedido.getDiscoId());
             
-            // Convertimos LocalDate a java.sql.Date
             ps.setDate(3, pedido.getFecha() != null ? java.sql.Date.valueOf(pedido.getFecha()) : null);
             ps.setInt(4, pedido.getCantidad());
             ps.setDouble(5, pedido.getTotal());
@@ -32,46 +31,41 @@ public class PedidoDAOImpl implements PedidoDAO {
             ps.executeUpdate();
             System.out.println("Pedido correctamente añadido");
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error al insertar pedido: " + e.getMessage());
             throw e;
         }
     }
 
     @Override
     public List<PedidoDTO> listarTodos() throws SQLException {
-        // Consulta SQL con JOIN trayendo exactamente los campos que pide tu PedidoDTO
-        String sql = "SELECT p.id, p.fecha, p.cantidad, p.total, p.estado, " +
-                    "c.nombre AS cliente_nombre, c.apellidos AS cliente_apellidos, c.username AS cliente_username, " +
-                    "d.titulo AS disco_titulo, d.artista AS disco_artista " +
-                    "FROM pedidos p " +
-                    "JOIN clientes c ON p.cliente_id = c.id " +
-                    "JOIN discos d ON p.disco_id = d.id";
-                    
+        // JOIN para ir directo a la tabla usuarios, evitando buscar nombre en clientes
+        String sql = "SELECT p.id, u.nombre, u.apellidos, u.username, d.titulo, d.artista, p.fecha, p.cantidad, p.total, p.estado " +
+                     "FROM pedidos p " +
+                     "JOIN usuarios u ON p.cliente_id = u.id " +
+                     "JOIN discos d ON p.disco_id = d.id";
+                     
         List<PedidoDTO> lista = new ArrayList<>();
-        System.out.println("Listado de pedidos (DTO): ");
 
         try (Connection conn = ConexionDB.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
             
             while (rs.next()) {
                 PedidoDTO dto = new PedidoDTO();
-                
                 dto.setPedidoId(rs.getInt("id"));
                 
-                // Datos del Cliente
-                String nombreCompleto = rs.getString("cliente_nombre") + " " + rs.getString("cliente_apellidos");
+                // Une Nombre + Apellidos para rellenar el campo del cliente en el DTO
+                String nombreCompleto = rs.getString("nombre") + " " + rs.getString("apellidos");
                 dto.setClienteNombre(nombreCompleto);
-                dto.setClienteUsername(rs.getString("cliente_username"));
                 
-                // Datos del Disco
-                dto.setDiscoTitulo(rs.getString("disco_titulo"));
-                dto.setDiscoArtista(rs.getString("disco_artista"));
+                dto.setClienteUsername(rs.getString("username"));
+                dto.setDiscoTitulo(rs.getString("titulo"));
+                dto.setDiscoArtista(rs.getString("artista"));
                 
-                // Datos generales del Pedido
                 if (rs.getDate("fecha") != null) {
                     dto.setFecha(rs.getDate("fecha").toLocalDate());
                 }
+                
                 dto.setCantidad(rs.getInt("cantidad"));
                 dto.setTotal(rs.getDouble("total"));
                 dto.setEstado(rs.getString("estado"));
@@ -79,7 +73,7 @@ public class PedidoDAOImpl implements PedidoDAO {
                 lista.add(dto);
             }
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error al listar pedidos: " + e.getMessage());
             throw e;
         }
         return lista;
@@ -93,11 +87,10 @@ public class PedidoDAOImpl implements PedidoDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, id);
-            
             ps.executeUpdate();
             System.out.println("Pedido correctamente eliminado");
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error al eliminar pedido: " + e.getMessage());
             throw e;
         }
     }
@@ -115,7 +108,7 @@ public class PedidoDAOImpl implements PedidoDAO {
             ps.executeUpdate();
             System.out.println("Estado del pedido correctamente actualizado");
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Error al actualizar estado del pedido: " + e.getMessage());
             throw e;
         }
     }
