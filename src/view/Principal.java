@@ -13,15 +13,15 @@ import java.time.LocalDate;
 public class Principal extends JFrame {
 
     // DAOs — uno por cada entidad
-    private final DiscoDAO   discoDAO   = new DiscoDAOImpl();
+    private final DiscoDAO discoDAO = new DiscoDAOImpl();
     private final ClienteDAO clienteDAO = new ClienteDAOImpl();
-    private final PedidoDAO  pedidoDAO  = new PedidoDAOImpl();
+    private final PedidoDAO pedidoDAO  = new PedidoDAOImpl();
     private final UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
 
     private final Usuario usuarioLogueado;
 
     // ── Tablas y modelos ──────────────────────────────────
-    private JTable           tablaDiscos,   tablaClientes,   tablaPedidos,   tablaUsuarios;
+    private JTable tablaDiscos, tablaClientes, tablaPedidos, tablaUsuarios;
     private DefaultTableModel modeloDiscos, modeloClientes, modeloPedidos, modeloUsuarios;
 
     public Principal(Usuario usuario) {
@@ -37,7 +37,7 @@ public class Principal extends JFrame {
 
         // Barra superior con nombre de usuario
         JPanel barraSuperior = new JPanel(new BorderLayout());
-        barraSuperior.setBackground(Tema.FONDO_OSCURO);
+        barraSuperior.setBackground(Tema.AZUL);
 
         JLabel lblLogo = new JLabel("  MILOAD SYSTEM");
         lblLogo.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -47,20 +47,20 @@ public class Principal extends JFrame {
             "Usuario: " + usuarioLogueado.getNombre() + " (" + usuarioLogueado.getRol() + ")  "
         );
         lblUsuario.setFont(Tema.FUENTE_NORMAL);
-        lblUsuario.setForeground(Color.LIGHT_GRAY);
+        lblUsuario.setForeground(Color.WHITE);
 
         barraSuperior.add(lblLogo,   BorderLayout.WEST);
         barraSuperior.add(lblUsuario, BorderLayout.EAST);
 
-        // Pestañas — una por módulo
+        // Pestañas 
         JTabbedPane pestanas = new JTabbedPane();
-        pestanas.addTab("Discos",    panelDiscos());
-        pestanas.addTab("Clientes",  panelClientes());
-        pestanas.addTab("Pedidos",   panelPedidos());
-        pestanas.addTab("Usuarios",  panelUsuarios());
+        pestanas.addTab("Discos", panelDiscos());
+        pestanas.addTab("Clientes", panelClientes());
+        pestanas.addTab("Pedidos", panelPedidos());
+        pestanas.addTab("Usuarios", panelUsuarios());
 
         add(barraSuperior, BorderLayout.NORTH);
-        add(pestanas,      BorderLayout.CENTER);
+        add(pestanas, BorderLayout.CENTER);
 
         // Cargamos los datos al abrir
         cargarDiscos();
@@ -88,29 +88,38 @@ public class Principal extends JFrame {
         // ── Formulario derecho ────────────────────────────
         JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
 
-        JTextField tfTitulo   = new JTextField();
-        JTextField tfArtista  = new JTextField();
-        JTextField tfGenero   = new JTextField();
-        JTextField tfAnio     = new JTextField();
+        JTextField tfTitulo = new JTextField();
+        JTextField tfArtista = new JTextField();
+        JTextField tfGenero = new JTextField();
+        JTextField tfAnio = new JTextField();
         JComboBox<String> cbFormato = new JComboBox<>(
             new String[]{"Vinilo", "CD", "Cassette", "Digital"}
         );
-        JTextField tfPrecio   = new JTextField();
-        JTextField tfStock    = new JTextField();
-        JTextField tfDesc     = new JTextField();
+        JTextField tfPrecio = new JTextField();
+        JTextField tfStock = new JTextField();
+        JTextField tfDesc = new JTextField();
         JTextField tfBuscarId = new JTextField();
 
-        form.add(new JLabel("Título:"));      form.add(tfTitulo);
-        form.add(new JLabel("Artista:"));     form.add(tfArtista);
-        form.add(new JLabel("Género:"));      form.add(tfGenero);
-        form.add(new JLabel("Año:"));         form.add(tfAnio);
-        form.add(new JLabel("Formato:"));     form.add(cbFormato);
-        form.add(new JLabel("Precio:"));      form.add(tfPrecio);
-        form.add(new JLabel("Stock:"));       form.add(tfStock);
-        form.add(new JLabel("Descripción:")); form.add(tfDesc);
-        form.add(new JLabel("Buscar por ID:")); form.add(tfBuscarId);
+        form.add(new JLabel("Título:"));      
+        form.add(tfTitulo);
+        form.add(new JLabel("Artista:"));     
+        form.add(tfArtista);
+        form.add(new JLabel("Género:"));      
+        form.add(tfGenero);
+        form.add(new JLabel("Año:"));         
+        form.add(tfAnio);
+        form.add(new JLabel("Formato:"));     
+        form.add(cbFormato);
+        form.add(new JLabel("Precio:"));      
+        form.add(tfPrecio);
+        form.add(new JLabel("Stock:"));       
+        form.add(tfStock);
+        form.add(new JLabel("Descripción:")); 
+        form.add(tfDesc);
+        form.add(new JLabel("Buscar por ID:")); 
+        form.add(tfBuscarId);
 
-        // Al seleccionar una fila rellena el formulario
+        // Cuando se seleccione una fila rellena del formulario
         tablaDiscos.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaDiscos.getSelectedRow();
             if (fila < 0) return;
@@ -141,11 +150,11 @@ public class Principal extends JFrame {
 
                 int fila = tablaDiscos.getSelectedRow();
                 if (fila < 0) {
-                    // No hay fila seleccionada → insertar
+                    // Si no hay fila seleccionada : insertar
                     discoDAO.insertar(d);
                     JOptionPane.showMessageDialog(this, "Disco añadido.");
                 } else {
-                    // Hay fila seleccionada → actualizar
+                    // Si hay fila seleccionada : actualizar
                     d.setId((int) modeloDiscos.getValueAt(fila, 0));
                     discoDAO.actualizar(d);
                     JOptionPane.showMessageDialog(this, "Disco actualizado.");
@@ -257,23 +266,31 @@ public class Principal extends JFrame {
 
         JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
 
-        JTextField tfNombre    = new JTextField();
+        JTextField tfNombre = new JTextField();
         JTextField tfApellidos = new JTextField();
-        JTextField tfUsername  = new JTextField();
-        JTextField tfEmail     = new JTextField();
-        JTextField tfDni       = new JTextField();
-        JTextField tfTelefono  = new JTextField();
+        JTextField tfUsername = new JTextField();
+        JTextField tfEmail = new JTextField();
+        JTextField tfDni = new JTextField();
+        JTextField tfTelefono = new JTextField();
         JTextField tfDireccion = new JTextField();
-        JTextField tfBuscarId  = new JTextField();
+        JTextField tfBuscarId = new JTextField();
 
-        form.add(new JLabel("Nombre:"));      form.add(tfNombre);
-        form.add(new JLabel("Apellidos:"));   form.add(tfApellidos);
-        form.add(new JLabel("Username:"));    form.add(tfUsername);
-        form.add(new JLabel("Email:"));       form.add(tfEmail);
-        form.add(new JLabel("DNI:"));         form.add(tfDni);
-        form.add(new JLabel("Teléfono:"));    form.add(tfTelefono);
-        form.add(new JLabel("Dirección:"));   form.add(tfDireccion);
-        form.add(new JLabel("Buscar por ID:")); form.add(tfBuscarId);
+        form.add(new JLabel("Nombre:"));      
+        form.add(tfNombre);
+        form.add(new JLabel("Apellidos:"));   
+        form.add(tfApellidos);
+        form.add(new JLabel("Username:"));    
+        form.add(tfUsername);
+        form.add(new JLabel("Email:"));       
+        form.add(tfEmail);
+        form.add(new JLabel("DNI:"));         
+        form.add(tfDni);
+        form.add(new JLabel("Teléfono:"));    
+        form.add(tfTelefono);
+        form.add(new JLabel("Dirección:"));   
+        form.add(tfDireccion);
+        form.add(new JLabel("Buscar por ID:")); 
+        form.add(tfBuscarId);
 
         tablaClientes.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaClientes.getSelectedRow();
@@ -361,7 +378,7 @@ public class Principal extends JFrame {
         botones.add(btnRecargar);
 
         JPanel derecho = new JPanel(new BorderLayout(5, 5));
-        derecho.add(form,    BorderLayout.CENTER);
+        derecho.add(form, BorderLayout.CENTER);
         derecho.add(botones, BorderLayout.SOUTH);
         derecho.setPreferredSize(new Dimension(300, 0));
 
@@ -408,10 +425,14 @@ public class Principal extends JFrame {
             new String[]{"pendiente", "completado", "cancelado"}
         );
 
-        form.add(new JLabel("ID Cliente:"));  form.add(tfClienteId);
-        form.add(new JLabel("ID Disco:"));    form.add(tfDiscoId);
-        form.add(new JLabel("Cantidad:"));    form.add(tfCantidad);
-        form.add(new JLabel("Estado:"));      form.add(cbEstado);
+        form.add(new JLabel("ID Cliente:"));  
+        form.add(tfClienteId);
+        form.add(new JLabel("ID Disco:"));    
+        form.add(tfDiscoId);
+        form.add(new JLabel("Cantidad:"));    
+        form.add(tfCantidad);
+        form.add(new JLabel("Estado:"));      
+        form.add(cbEstado);
 
         // Al seleccionar fila rellena el estado
         tablaPedidos.getSelectionModel().addListSelectionListener(e -> {
@@ -479,7 +500,7 @@ public class Principal extends JFrame {
         botones.add(btnRecargar);
 
         JPanel derecho = new JPanel(new BorderLayout(5, 5));
-        derecho.add(form,    BorderLayout.CENTER);
+        derecho.add(form, BorderLayout.CENTER);
         derecho.add(botones, BorderLayout.SOUTH);
         derecho.setPreferredSize(new Dimension(250, 0));
 
@@ -519,19 +540,25 @@ public class Principal extends JFrame {
 
         JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
 
-        JTextField tfUsername  = new JTextField();
-        JTextField tfNombre    = new JTextField();
+        JTextField tfUsername = new JTextField();
+        JTextField tfNombre = new JTextField();
         JTextField tfApellidos = new JTextField();
-        JTextField tfEmail     = new JTextField();
-        JTextField tfDni       = new JTextField();
+        JTextField tfEmail = new JTextField();
+        JTextField tfDni = new JTextField();
         JComboBox<String> cbRol = new JComboBox<>(new String[]{"cliente", "empleado"});
 
-        form.add(new JLabel("Username:"));  form.add(tfUsername);
-        form.add(new JLabel("Nombre:"));    form.add(tfNombre);
-        form.add(new JLabel("Apellidos:")); form.add(tfApellidos);
-        form.add(new JLabel("Email:"));     form.add(tfEmail);
-        form.add(new JLabel("DNI:"));       form.add(tfDni);
-        form.add(new JLabel("Rol:"));       form.add(cbRol);
+        form.add(new JLabel("Username:"));  
+        form.add(tfUsername);
+        form.add(new JLabel("Nombre:"));    
+        form.add(tfNombre);
+        form.add(new JLabel("Apellidos:")); 
+        form.add(tfApellidos);
+        form.add(new JLabel("Email:"));     
+        form.add(tfEmail);
+        form.add(new JLabel("DNI:"));       
+        form.add(tfDni);
+        form.add(new JLabel("Rol:"));       
+        form.add(cbRol);
 
         tablaUsuarios.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaUsuarios.getSelectedRow();
@@ -596,7 +623,7 @@ public class Principal extends JFrame {
         botones.add(btnRecargar);
 
         JPanel derecho = new JPanel(new BorderLayout(5, 5));
-        derecho.add(form,    BorderLayout.CENTER);
+        derecho.add(form, BorderLayout.CENTER);
         derecho.add(botones, BorderLayout.SOUTH);
         derecho.setPreferredSize(new Dimension(280, 0));
 
