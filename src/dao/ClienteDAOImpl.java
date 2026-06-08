@@ -18,7 +18,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         String sql = "SELECT u.id, u.username, u.password, u.email, u.nombre, u.apellidos, u.dni, u.rol, " +
                      "c.telefono, c.direccion, c.fecha_registro " +
                      "FROM clientes c " +
-                     "JOIN usuarios u ON c.id_usuario = u.id";
+                     "JOIN usuarios u ON c.usuario_id = u.id";
                      
         List<Cliente> lista = new ArrayList<>();
         System.out.println("Listado de clientes mediante JOIN: ");
@@ -61,7 +61,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         // Primero actualiza los datos comunes en la tabla usuarios
         String sqlUsuario = "UPDATE usuarios SET username=?, email=?, nombre=?, apellidos=?, dni=? WHERE id=?";
         // Luego actualiza los datos específicos en la tabla clientes
-        String sqlCliente = "UPDATE clientes SET telefono=?, direccion=? WHERE id_usuario=?";
+        String sqlCliente = "UPDATE clientes SET telefono=?, direccion=? WHERE usuario_id=?";
 
         try (Connection conn = ConexionDB.getConnection()) {
             conn.setAutoCommit(false); // Activamos transacción
@@ -96,7 +96,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     @Override
     public void eliminar(int usuarioId) throws SQLException {
         // Primero borramos de la tabla hija (clientes) y luego de la padre (usuarios), pq están vinculadas
-        String sqlCliente = "DELETE FROM clientes WHERE id_usuario = ?";
+        String sqlCliente = "DELETE FROM clientes WHERE usuario_id = ?";
         String sqlUsuario = "DELETE FROM usuarios WHERE id = ?";
 
         try (Connection conn = ConexionDB.getConnection()) {
@@ -125,7 +125,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         String sql = "SELECT u.id, u.username, u.password, u.email, u.nombre, u.apellidos, u.dni, u.rol, " +
                      "c.telefono, c.direccion, c.fecha_registro " +
                      "FROM clientes c " +
-                     "JOIN usuarios u ON c.id_usuario = u.id " +
+                     "JOIN usuarios u ON c.usuario_id = u.id " +
                      "WHERE u.id = ?";
         
         try (Connection conn = ConexionDB.getConnection();

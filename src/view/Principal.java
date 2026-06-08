@@ -434,7 +434,14 @@ public class Principal extends JFrame {
                 p.setDiscoId(discoId);
                 p.setFecha(LocalDate.now());
                 p.setCantidad(cantidad);
-                p.setTotal(0.0); // el total lo puede calcular el negocio
+                // Calculamos el total buscando el precio del disco
+                Disco disco = discoDAO.buscarPorId(discoId);
+                if (disco == null) {
+                    JOptionPane.showMessageDialog(this, "No existe ningún disco con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                double total = disco.getPrecio() * cantidad;
+                p.setTotal(total);
                 p.setEstado(cbEstado.getSelectedItem().toString());
 
                 pedidoDAO.insertar(p);
