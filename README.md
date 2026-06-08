@@ -1,0 +1,150 @@
+# MILOAD — Sistema de Gestión de Tienda de Discos
+Aplicación de escritorio para la gestión integral de inventario de música, clientes y pedidos realizada en Java utilizando una arquitectura desacoplada.
+
+
+
+## Descripción General del Proyecto
+**MILOAD** es una solución informática orientada a tiendas de música y discos. La aplicación permite a los empleados administrar el stock de álbumes musicales (vinilos, CDs, casetes o digital), gestionar las fichas de los clientes y registrar transacciones o pedidos (relación N:M). El sistema cuenta con control de acceso mediante Login y un formulario unificado de Registro.
+
+### Funcionalidades Principales:
+* **Control de Acceso:** Login seguro que valida credenciales y Registro de cuentas para Clientes y Empleados.
+* **Módulo de Discos:** CRUD completo (Crear, Leer, Actualizar, Borrar) del catálogo musical.
+* **Módulo de Clientes:** Visualización detallada mediante técnicas de herencia relacional y edición de datos de contacto.
+* **Módulo de Pedidos:** Registro y eliminación de compras asociando de forma dinámica clientes y productos con cálculo automatizado.
+* **Módulo de Usuarios:** Visualización detallada de todo tipo de usuarios y edición de los mismos (empleados y clientes).
+
+
+
+## Arquitectura y Estructura del Proyecto
+El proyecto sigue rigurosamente el patrón arquitectónico **MVC (Modelo-Vista-Controlador)** y el patrón **DAO (Data Access Object)** para independizar la interfaz gráfica de la base de datos.
+
+La estructura de paquetes se organiza de la siguiente manera:
+* `src/db/`: Gestión de la conexión a la base de datos (`ConexionDB.java`) y control de transacciones manuales.
+* `src/model/`: Entidades del dominio (Clases: `Usuario`, `Cliente`, `Empleado`, `Disco`, `Pedido`).
+* `src/dao/`: Interfaces e implementaciones de persistencia JDBC utilizando `PreparedStatement` y `try-with-resources`.
+* `src/dto/`: Objetos de transferencia de datos (`PedidoDTO`) para resolver consultas complejas con sentencias `JOIN`.
+* `src/view/`: Interfaces gráficas de usuario desarrolladas nativamente en **Swing** (`Login`, `Registro`, `Principal`, `Tema`(este último para administrar colores y fuentes del sistema)).
+* `src/Main.java`: Clase principal y lanzador de la aplicación.
+
+Además también se compone de una librería `mysql-connector-j-8.3.0` para conectar la base de datos con Docker, y una carpeta de Documentación formado por un README, documentacion.docx, documentacion.pdf.
+
+
+
+## Modelo de Base de Datos
+La persistencia de datos se realiza sobre **MySQL**. El diseño implementa **Joined Table Inheritance (Herencia de Tabla Compartida)** donde la tabla raíz `usuarios` comparte su clave primaria en una relación 1:1 con las tablas hijas `clientes` y `empleados`. Todas las relaciones dependientes incluyen restricciones `ON DELETE CASCADE`.
+
+
+
+## Scripts de las tablas
+Copia y pega esta base de datos con sus tablas en el sript del proyecto para crearlo: 
+
+-- 1. Crear y usar la base de datos
+CREATE DATABASE IF NOT EXISTS miload;
+USE miload;
+
+-- ====================================================================
+-- 2. TABLA PADRE: USUARIOS (Usamos VARCHAR para el rol)
+-- ====================================================================
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    nombre VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    dni VARCHAR(20) NOT NULL UNIQUE,
+    rol VARCHAR(20) NOT NULL -- 'cliente' o 'empleado' en texto normal
+);
+
+-- ====================================================================
+-- 3. TABLAS HIJAS (CONECTADAS A USUARIOS CON CASCADE)
+-- ====================================================================
+
+-- Tabla Hija: Clientes
+CREATE TABLE IF NOT EXISTS clientes (
+    usuario_id INT PRIMARY KEY,
+    telefono VARCHAR(20),
+    direccion VARCHAR(150),
+    fecha_registro DATE NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- Tabla Hija: Empleados
+CREATE TABLE IF NOT EXISTS empleados (
+    usuario_id INT PRIMARY KEY,
+    cargo VARCHAR(50),
+    salario DECIMAL(10, 2) NOT NULL,
+    fecha_alta DATE NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- ====================================================================
+-- 4. TABLA PRINCIPAL: DISCOS
+-- ====================================================================
+CREATE TABLE IF NOT EXISTS discos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    artista VARCHAR(100) NOT NULL,
+    genero VARCHAR(50),
+    anio INT,
+    formato VARCHAR(30),
+    precio DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL,
+    descripcion TEXT
+);
+
+-- ====================================================================
+-- 5. TABLA N:M: PEDIDOS
+-- ====================================================================
+CREATE TABLE IF NOT EXISTS pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    disco_id INT NOT NULL,
+    fecha DATE NOT NULL,
+    cantidad INT NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    estado VARCHAR(30) NOT NULL,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(usuario_id) ON DELETE CASCADE,
+    FOREIGN KEY (disco_id) REFERENCES discos(id) ON DELETE CASCADE
+);
+
+-- ====================================================================
+-- 6. DATOS DE PRUEBA (CON TEXTO NORMAL Y FECHAS A MANO)
+-- ====================================================================
+
+-- Insertar un Empleado y un Cliente en la tabla padre (rol como texto normal)
+INSERT INTO usuarios (id, username, password, email, nombre, apellidos, dni, rol) VALUES
+(1, 'milo_admin', 'admin123', 'admin@miload.com', 'Milo', 'Garcia', '12345678A', 'empleado'),
+(2, 'juan_rock', 'juan123', 'juan@email.com', 'Juan', 'Perez', '87654321B', 'cliente');
+
+-- Insertar sus datos específicos en las tablas hijas (Fechas estándar 'AAAA-MM-DD')
+INSERT INTO empleados (usuario_id, cargo, salario, fecha_alta) VALUES
+(1, 'Administrador', 1850.50, '2026-06-01');
+
+INSERT INTO clientes (usuario_id, telefono, direccion, fecha_registro) VALUES
+(2, '600123456', 'Calle del Vinilo, 42', '2026-06-08');
+
+-- Insertar un par de Discos básicos
+INSERT INTO discos (id, titulo, artista, genero, anio, formato, precio, stock, descripcion) VALUES
+(1, 'The Dark Side of the Moon', 'Pink Floyd', 'Rock', 1973, 'Vinilo', 35.99, 10, 'Buen estado'),
+(2, 'Thriller', 'Michael Jackson', 'Pop', 1982, 'CD', 19.99, 5, 'Original');
+
+-- Insertar un Pedido básico
+INSERT INTO pedidos (id, cliente_id, disco_id, fecha, cantidad, total, estado) VALUES
+(1, 2, 1, '2026-06-08', 1, 35.99, 'Completado');
+
+
+
+##  Instalación y Ejecución
+Requisitos Previos:
+
+Java JDK 17 o superior.
+Servidor MySQL activo (XAMPP o Docker).
+Un entorno de desarrollo (se recomienda VS Code con el 'Extension Pack for Java').
+
+Pasos para arrancar:
+- Clonar el repositorio: git clone [https://github.com/itsrivert/ProyectoProgramaci-n.git)]
+- Importar la Base de Datos: Crea una base de datos llamada miload y ejecuta el script .sql incluido en el proyecto.
+- Configurar la Conexión: Revisa el archivo src/db/ConexionDB.java para asegurar que el usuario y la contraseña de tu MySQL local coincidan.
+- Ejecutar: Abre la carpeta en VS Code y haz clic en Run sobre el archivo Main.java.
+
