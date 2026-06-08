@@ -14,7 +14,7 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public List<Cliente> listarTodos() throws SQLException {
-        // JOIN obligatorio para juntar los datos de ambas tablas
+        // JOIN obligatorio para juntar los datos de ambas tablas (usuarios y clientes)
         String sql = "SELECT u.id, u.username, u.password, u.email, u.nombre, u.apellidos, u.dni, u.rol, " +
                      "c.telefono, c.direccion, c.fecha_registro " +
                      "FROM clientes c " +
@@ -64,7 +64,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         String sqlCliente = "UPDATE clientes SET telefono=?, direccion=? WHERE usuario_id=?";
 
         try (Connection conn = ConexionDB.getConnection()) {
-            conn.setAutoCommit(false); // Activamos transacción
+            conn.setAutoCommit(false); // Activa transacción
             
             try (PreparedStatement psU = conn.prepareStatement(sqlUsuario);
                  PreparedStatement psC = conn.prepareStatement(sqlCliente)) {
@@ -84,7 +84,7 @@ public class ClienteDAOImpl implements ClienteDAO {
                 psC.setInt(3, cliente.getId());
                 psC.executeUpdate();
                 
-                conn.commit(); // Guardamos los cambios de ambas tablas
+                conn.commit(); // Guarda los cambios de ambas tablas
                 System.out.println("Cliente y Usuario correctamente actualizados");
             } catch (SQLException e) {
                 conn.rollback(); // Por si algo falla
@@ -95,7 +95,7 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public void eliminar(int usuarioId) throws SQLException {
-        // Primero borramos de la tabla hija (clientes) y luego de la padre (usuarios), pq están vinculadas
+        // Primero borra de la tabla hija (clientes) y luego de la padre (usuarios), pq están vinculadas
         String sqlCliente = "DELETE FROM clientes WHERE usuario_id = ?";
         String sqlUsuario = "DELETE FROM usuarios WHERE id = ?";
 

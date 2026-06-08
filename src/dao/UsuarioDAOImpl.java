@@ -45,12 +45,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
         return u;
     }
-
-    /**
-     * Inserta en usuarios + tabla hija (clientes o empleados) en una sola transacción.
-     * Si el objeto es Cliente, también inserta en la tabla clientes.
-     * Si es Empleado, también inserta en la tabla empleados.
-     */
+    
     @Override
     public void registrar(Usuario usuario) throws SQLException {
         String sqlUsuario = "INSERT INTO usuarios (username, password, email, nombre, apellidos, dni, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -60,7 +55,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             try {
                 int nuevoId;
 
-                // 1. Insertar en usuarios y obtener el id generado
+                // Insertar en usuarios y obtener el id generado
                 try (PreparedStatement ps = conn.prepareStatement(sqlUsuario, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setString(1, usuario.getUsername());
                     ps.setString(2, usuario.getPassword());
@@ -80,7 +75,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                     }
                 }
 
-                // 2. Insertar en la tabla hija según el tipo
+                // Insertar en la tabla hija según el tipo
                 if (usuario instanceof Cliente c) {
                     String sqlCliente = "INSERT INTO clientes (usuario_id, telefono, direccion, fecha_registro) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement ps2 = conn.prepareStatement(sqlCliente)) {

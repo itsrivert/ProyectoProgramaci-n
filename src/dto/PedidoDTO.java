@@ -3,21 +3,20 @@ package src.dto;
 import java.time.LocalDate;
 
 public class PedidoDTO {
-    private int        pedidoId;
-    private String     clienteNombre;   // nombre + apellidos del cliente
-    private String     clienteUsername;
-    private String     discoTitulo;
-    private String     discoArtista;
-    private LocalDate  fecha;
-    private int        cantidad;
-    private Double     total;
-    private String     estado;
+    private int pedidoId;
+    private String clienteNombre;   // nombre completo del cliente
+    private String clienteUsername;
+    private String discoTitulo;
+    private String discoArtista;
+    private LocalDate fecha;
+    private int cantidad;
+    private Double total;
+    private String estado;
     
     public PedidoDTO() {
     }
 
-    public PedidoDTO(int pedidoId, String clienteNombre, String clienteUsername, String discoTitulo,
-            String discoArtista, LocalDate fecha, int cantidad, Double total, String estado) {
+    public PedidoDTO(int pedidoId, String clienteNombre, String clienteUsername, String discoTitulo, String discoArtista, LocalDate fecha, int cantidad, Double total, String estado) {
         this.pedidoId = pedidoId;
         this.clienteNombre = clienteNombre;
         this.clienteUsername = clienteUsername;

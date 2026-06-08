@@ -8,7 +8,6 @@ import src.model.Pedido;
 
 public interface PedidoDAO {
     void insertar(Pedido pedido) throws SQLException;
-    /** Todos los pedidos con datos de cliente y disco (un JOIN). */
     List<PedidoDTO> listarTodos() throws SQLException;
     void eliminar(int id) throws SQLException;
 }
