@@ -82,7 +82,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
                 // 2. Insertar en la tabla hija según el tipo
                 if (usuario instanceof Cliente c) {
-                    String sqlCliente = "INSERT INTO clientes (id_usuario, telefono, direccion, fecha_registro) VALUES (?, ?, ?, ?)";
+                    String sqlCliente = "INSERT INTO clientes (usuario_id, telefono, direccion, fecha_registro) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement ps2 = conn.prepareStatement(sqlCliente)) {
                         ps2.setInt(1, nuevoId);
                         ps2.setString(2, c.getTelefono());
@@ -92,7 +92,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                         ps2.executeUpdate();
                     }
                 } else if (usuario instanceof Empleado emp) {
-                    String sqlEmpleado = "INSERT INTO empleados (id_usuario, cargo, salario, fecha_alta) VALUES (?, ?, ?, ?)";
+                    String sqlEmpleado = "INSERT INTO empleados (usuario_id, cargo, salario, fecha_alta) VALUES (?, ?, ?, ?)";
                     try (PreparedStatement ps2 = conn.prepareStatement(sqlEmpleado)) {
                         ps2.setInt(1, nuevoId);
                         ps2.setString(2, emp.getCargo());
