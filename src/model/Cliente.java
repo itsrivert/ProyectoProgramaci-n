@@ -3,15 +3,14 @@ package src.model;
 import java.time.LocalDate;
 
 public class Cliente extends Usuario{
-    private String    telefono;
-    private String    direccion;
+    private String telefono;
+    private String direccion;
     private LocalDate fechaRegistro;
     
     public Cliente() {
     }
 
-    public Cliente(int id, String username, String password, String email, String nombre, String apellidos, String dni,
-            String rol, String telefono, String direccion, LocalDate fechaRegistro) {
+    public Cliente(int id, String username, String password, String email, String nombre, String apellidos, String dni, String rol, String telefono, String direccion, LocalDate fechaRegistro) {
         super(id, username, password, email, nombre, apellidos, dni, rol);
         this.telefono = telefono;
         this.direccion = direccion;

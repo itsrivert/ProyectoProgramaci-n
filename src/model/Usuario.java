@@ -1,7 +1,7 @@
 package src.model;
 
 public class Usuario {
-    private int    id;
+    private int id;
     private String username;
     private String password;
     private String email;
@@ -12,8 +12,7 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(int id, String username, String password, String email, String nombre, String apellidos, String dni,
-            String rol) {
+    public Usuario(int id, String username, String password, String email, String nombre, String apellidos, String dni, String rol) {
         this.id = id;
         this.username = username;
         this.password = password;

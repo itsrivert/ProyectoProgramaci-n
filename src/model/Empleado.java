@@ -4,15 +4,14 @@ import java.time.LocalDate;
 
 public class Empleado extends Usuario{
     
-    private String     cargo;
+    private String cargo;
     private Double salario;
-    private LocalDate  fechaAlta;
+    private LocalDate fechaAlta;
     
     public Empleado() {
     }
 
-    public Empleado(int id, String username, String password, String email, String nombre, String apellidos, String dni,
-            String rol, String cargo, Double salario, LocalDate fechaAlta) {
+    public Empleado(int id, String username, String password, String email, String nombre, String apellidos, String dni, String rol, String cargo, Double salario, LocalDate fechaAlta) {
         super(id, username, password, email, nombre, apellidos, dni, rol);
         this.cargo = cargo;
         this.salario = salario;

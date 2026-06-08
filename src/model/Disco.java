@@ -2,21 +2,20 @@ package src.model;
 
 public class Disco {
 
-    private int        id;
-    private String     titulo;
-    private String     artista;
-    private String     genero;
-    private int        anio;
-    private String     formato;   // Vinilo | CD | Cassette | Digital
-    private Double     precio;
-    private int        stock;
-    private String     descripcion;
+    private int id;
+    private String titulo;
+    private String artista;
+    private String genero;
+    private int anio;
+    private String formato;   // Vinilo | CD | Cassette | Digital
+    private Double precio;
+    private int stock;
+    private String descripcion;
     
     public Disco() {
     }
 
-    public Disco(int id, String titulo, String artista, String genero, int anio, String formato, Double precio,
-            int stock, String descripcion) {
+    public Disco(int id, String titulo, String artista, String genero, int anio, String formato, Double precio, int stock, String descripcion) {
         this.id = id;
         this.titulo = titulo;
         this.artista = artista;

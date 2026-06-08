@@ -3,13 +3,13 @@ package src.model;
 import java.time.LocalDate;
 
 public class Pedido {
-    private int        id;
-    private int        clienteId;
-    private int        discoId;
-    private LocalDate  fecha;
-    private int        cantidad;
-    private Double     total;
-    private String     estado;   // pendiente | completado | cancelado 
+    private int id;
+    private int clienteId;
+    private int discoId;
+    private LocalDate fecha;
+    private int cantidad;
+    private Double total;
+    private String estado;   // pendiente | completado | cancelado 
     
     public Pedido() {
     }
