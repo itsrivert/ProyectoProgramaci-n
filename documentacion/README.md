@@ -1,3 +1,6 @@
+# Enlace a github
+https://github.com/itsrivert/ProyectoProgramaci-n.git
+
 # MILOAD — Sistema de Gestión de Tienda de Discos
 Aplicación de escritorio para la gestión integral de inventario de música, clientes y pedidos realizada en Java utilizando una arquitectura desacoplada.
 
@@ -32,7 +35,6 @@ Además también se compone de una librería `mysql-connector-j-8.3.0` para cone
 
 ## Modelo de Base de Datos
 La persistencia de datos se realiza sobre **MySQL**. El diseño implementa **Joined Table Inheritance (Herencia de Tabla Compartida)** donde la tabla raíz `usuarios` comparte su clave primaria en una relación 1:1 con las tablas hijas `clientes` y `empleados`. Todas las relaciones dependientes incluyen restricciones `ON DELETE CASCADE`.
-
 
 
 ## Scripts de las tablas

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Registro extends JFrame {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
-    private final Login ventanaLogin;
+    private final Login ventanaLogin; // Referencia para volver al login
 
     private JTextField campoUsername, campoEmail, campoNombre, campoApellidos, campoDni;
     private JPasswordField campoPassword;
@@ -150,7 +150,7 @@ public class Registro extends JFrame {
         agregarSeccion(panelEmpleado, "Salario", campoSalario, "Opcional — número decimal");
         card.add(panelEmpleado);
 
-        // ── Listener combo ────────────────────────────────
+        // ── Listener combo ──────────────────────────────── Se cambia cada vez que cambia de opción en el desplegable
         comboRol.addActionListener(e -> {
             boolean esCliente = comboRol.getSelectedIndex() == 0;
             panelCliente.setVisible(esCliente);
@@ -200,8 +200,7 @@ public class Registro extends JFrame {
         card.add(Box.createVerticalStrut(8));
     }
 
-    // ── Sección: label + campo + hint opcional ────────────
-    private void agregarSeccion(JPanel panel, String label, JComponent comp, String hint) {
+    private void agregarSeccion(JPanel panel, String label, JComponent comp, String hint) { // Crea la seccion con label + seccion (+ opcional)
         JLabel lbl = new JLabel(label);
         lbl.setFont(Tema.FUENTE_BOLD);
         lbl.setForeground(Tema.TEXTO_PRIMARIO);
@@ -213,7 +212,7 @@ public class Registro extends JFrame {
         comp.setAlignmentX(LEFT_ALIGNMENT);
         panel.add(comp);
 
-        if (hint != null) {
+        if (hint != null) { 
             JLabel hintLbl = new JLabel(hint);
             hintLbl.setFont(Tema.FUENTE_SMALL);
             hintLbl.setForeground(Tema.TEXTO_SECUNDARIO);
@@ -224,8 +223,7 @@ public class Registro extends JFrame {
         panel.add(Box.createVerticalStrut(10));
     }
 
-    // ── Campo de texto con placeholder y borde azul al foco
-    private JTextField nuevoCampo(String placeholder) {
+    private JTextField nuevoCampo(String placeholder) { // Para las letritas grises
         JTextField tf = new JTextField() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -244,7 +242,7 @@ public class Registro extends JFrame {
         return tf;
     }
 
-    private void estilizar(JComponent comp) {
+    private void estilizar(JComponent comp) { // Aplica los estilos visuales a cualquier componente
         comp.setFont(Tema.FUENTE_NORMAL);
         comp.setBackground(Tema.FONDO_CAMPO);
         comp.setForeground(Tema.TEXTO_PRIMARIO);

@@ -122,7 +122,7 @@ public class Login extends JFrame {
         card.add(Box.createVerticalStrut(8));
     }
 
-    private void agregarSeccion(JPanel panel, String label, JComponent comp) {
+    private void agregarSeccion(JPanel panel, String label, JComponent comp) { //Agrega un label y el sitio donde escribir
         JLabel lbl = new JLabel(label);
         lbl.setFont(Tema.FUENTE_BOLD);
         lbl.setForeground(Tema.TEXTO_PRIMARIO);
@@ -135,7 +135,7 @@ public class Login extends JFrame {
         panel.add(Box.createVerticalStrut(12));
     }
 
-    private JTextField nuevoCampo(String placeholder) {
+    private JTextField nuevoCampo(String placeholder) { //Para poner las letricas grises 
         JTextField tf = new JTextField() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -154,7 +154,7 @@ public class Login extends JFrame {
         return tf;
     }
 
-    private void estilizar(JComponent comp) {
+    private void estilizar(JComponent comp) { //Aplica los estilos a los componentes
         comp.setFont(Tema.FUENTE_NORMAL);
         comp.setBackground(Tema.FONDO_CAMPO);
         comp.setForeground(Tema.TEXTO_PRIMARIO);
@@ -178,7 +178,7 @@ public class Login extends JFrame {
         });
     }
 
-    private void intentarLogin() {
+    private void intentarLogin() { // Valida el user y la password
         String user = campoUsuario.getText().trim();
         String pass = new String(campoPassword.getPassword()).trim();
 

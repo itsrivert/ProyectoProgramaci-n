@@ -20,18 +20,18 @@ public class Principal extends JFrame {
 
     private final Usuario usuarioLogueado;
 
-    // ── Tablas y modelos ──────────────────────────────────
+    // ── Tablas y modelos ────────────────────────────────── Los datos de las tablas (filas + columnas)
     private JTable tablaDiscos, tablaClientes, tablaPedidos, tablaUsuarios;
     private DefaultTableModel modeloDiscos, modeloClientes, modeloPedidos, modeloUsuarios;
 
     public Principal(Usuario usuario) {
         super("MILOAD — Panel Principal");
-        this.usuarioLogueado = usuario;
+        this.usuarioLogueado = usuario; // guarda el usuario que este usando en ese momento para mostrarlo en la barra de arriba
         initUI();
     }
 
     private void initUI() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // cierra la app entera
         setSize(950, 650);
         setLocationRelativeTo(null);
 
@@ -44,25 +44,26 @@ public class Principal extends JFrame {
         lblLogo.setForeground(Color.WHITE);
 
         JLabel lblUsuario = new JLabel(
-            "Usuario: " + usuarioLogueado.getNombre() + " (" + usuarioLogueado.getRol() + ")  "
+            "Usuario: " + usuarioLogueado.getNombre() + " (" + usuarioLogueado.getRol() + ")  " // Usuario guardado previamente
         );
         lblUsuario.setFont(Tema.FUENTE_NORMAL);
         lblUsuario.setForeground(Color.WHITE);
 
-        barraSuperior.add(lblLogo,   BorderLayout.WEST);
-        barraSuperior.add(lblUsuario, BorderLayout.EAST);
+        barraSuperior.add(lblLogo,   BorderLayout.WEST); // se pega miload a la izquierda
+        barraSuperior.add(lblUsuario, BorderLayout.EAST); // se pega el user a la derecha
 
         // Pestañas 
-        JTabbedPane pestanas = new JTabbedPane();
+        JTabbedPane pestanas = new JTabbedPane(); // Contenedor de las pestañas
         pestanas.addTab("Discos", panelDiscos());
         pestanas.addTab("Clientes", panelClientes());
         pestanas.addTab("Pedidos", panelPedidos());
         pestanas.addTab("Usuarios", panelUsuarios());
+        
 
         add(barraSuperior, BorderLayout.NORTH);
         add(pestanas, BorderLayout.CENTER);
 
-        // Cargamos los datos al abrir
+        // Cargamos los datos al abrir la ventana
         cargarDiscos();
         cargarClientes();
         cargarPedidos();
@@ -86,15 +87,15 @@ public class Principal extends JFrame {
         panel.add(new JScrollPane(tablaDiscos), BorderLayout.CENTER);
 
         // ── Formulario derecho ────────────────────────────
-        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
-
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5)); // Grid en 2 columnas
+        // Etiquetas
         JTextField tfTitulo = new JTextField();
         JTextField tfArtista = new JTextField();
         JTextField tfGenero = new JTextField();
         JTextField tfAnio = new JTextField();
         JComboBox<String> cbFormato = new JComboBox<>(
             new String[]{"Vinilo", "CD", "Cassette", "Digital"}
-        );
+        ); // Desplegable
         JTextField tfPrecio = new JTextField();
         JTextField tfStock = new JTextField();
         JTextField tfDesc = new JTextField();
@@ -119,10 +120,10 @@ public class Principal extends JFrame {
         form.add(new JLabel("Buscar por ID:")); 
         form.add(tfBuscarId);
 
-        // Cuando se seleccione una fila rellena del formulario
+        // Cuando se seleccione una fila rellena de la tabla
         tablaDiscos.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaDiscos.getSelectedRow();
-            if (fila < 0) return;
+            if (fila < 0) return; // Si no hay eleccion no hace na
             tfTitulo.setText(modeloDiscos.getValueAt(fila, 1).toString());
             tfArtista.setText(modeloDiscos.getValueAt(fila, 2).toString());
             tfGenero.setText(modeloDiscos.getValueAt(fila, 3).toString());
@@ -133,12 +134,12 @@ public class Principal extends JFrame {
         });
 
         // ── Botones ───────────────────────────────────────
-        JPanel botones = new JPanel(new GridLayout(0, 1, 5, 5));
-
+        JPanel botones = new JPanel(new GridLayout(0, 1, 5, 5)); // 1 columna de botones
+        //Guardar
         JButton btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(e -> {
             try {
-                Disco d = new Disco();
+                Disco d = new Disco(); // Crea un objeto disco con los datos q le hemos pasado
                 d.setTitulo(tfTitulo.getText().trim());
                 d.setArtista(tfArtista.getText().trim());
                 d.setGenero(tfGenero.getText().trim());
@@ -166,7 +167,7 @@ public class Principal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        // Eliminar
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(e -> {
             int fila = tablaDiscos.getSelectedRow();
@@ -183,7 +184,7 @@ public class Principal extends JFrame {
                 }
             }
         });
-
+        // Buscar Id
         JButton btnBuscar = new JButton("Buscar por ID");
         btnBuscar.addActionListener(e -> {
             try {
@@ -208,7 +209,7 @@ public class Principal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        // Limpiar
         JButton btnLimpiar = new JButton("Limpiar");
         btnLimpiar.addActionListener(e -> {
             tablaDiscos.clearSelection();
@@ -216,25 +217,25 @@ public class Principal extends JFrame {
             tfAnio.setText(""); tfPrecio.setText(""); tfStock.setText("");
             tfDesc.setText(""); tfBuscarId.setText("");
         });
-
+        // Recargar
         JButton btnRecargar = new JButton("Recargar lista");
         btnRecargar.addActionListener(e -> cargarDiscos());
-
+        //Añade botones
         botones.add(btnGuardar);
         botones.add(btnEliminar);
         botones.add(btnBuscar);
         botones.add(btnLimpiar);
         botones.add(btnRecargar);
-
+        // Organiza el panel del formulario
         JPanel derecho = new JPanel(new BorderLayout(5, 5));
         derecho.add(form,    BorderLayout.CENTER);
         derecho.add(botones, BorderLayout.SOUTH);
         derecho.setPreferredSize(new Dimension(300, 0));
-
+        // lo añade
         panel.add(derecho, BorderLayout.EAST);
         return panel;
     }
-
+    // Limpia la tabla y rellena con todos los discos de la BD
     private void cargarDiscos() {
         modeloDiscos.setRowCount(0);
         try {
@@ -264,8 +265,8 @@ public class Principal extends JFrame {
         tablaClientes = new JTable(modeloClientes);
         panel.add(new JScrollPane(tablaClientes), BorderLayout.CENTER);
 
-        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
-
+        JPanel form = new JPanel(new GridLayout(0, 2, 5, 5)); // Panel de 2 columnas
+        // Etiquetas
         JTextField tfNombre = new JTextField();
         JTextField tfApellidos = new JTextField();
         JTextField tfUsername = new JTextField();
@@ -292,6 +293,7 @@ public class Principal extends JFrame {
         form.add(new JLabel("Buscar por ID:")); 
         form.add(tfBuscarId);
 
+        // Cuando se seleccione una fila rellena de la tabla
         tablaClientes.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaClientes.getSelectedRow();
             if (fila < 0) return;
@@ -304,8 +306,8 @@ public class Principal extends JFrame {
             tfDireccion.setText(modeloClientes.getValueAt(fila, 7) != null ? modeloClientes.getValueAt(fila, 7).toString() : "");
         });
 
-        JPanel botones = new JPanel(new GridLayout(0, 1, 5, 5));
-
+        JPanel botones = new JPanel(new GridLayout(0, 1, 5, 5)); //Grid de botones
+        // Guardar
         JButton btnGuardar = new JButton("Guardar cambios");
         btnGuardar.addActionListener(e -> {
             int fila = tablaClientes.getSelectedRow();
@@ -327,7 +329,7 @@ public class Principal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        //Eliminar
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(e -> {
             int fila = tablaClientes.getSelectedRow();
@@ -344,7 +346,7 @@ public class Principal extends JFrame {
                 }
             }
         });
-
+        // Bucar ID
         JButton btnBuscar = new JButton("Buscar por ID");
         btnBuscar.addActionListener(e -> {
             try {
@@ -368,20 +370,20 @@ public class Principal extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error BD", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        // Recargar
         JButton btnRecargar = new JButton("Recargar lista");
         btnRecargar.addActionListener(e -> cargarClientes());
-
+        // Añade botones
         botones.add(btnGuardar);
         botones.add(btnEliminar);
         botones.add(btnBuscar);
         botones.add(btnRecargar);
-
+        // Organiza el panel
         JPanel derecho = new JPanel(new BorderLayout(5, 5));
         derecho.add(form, BorderLayout.CENTER);
         derecho.add(botones, BorderLayout.SOUTH);
         derecho.setPreferredSize(new Dimension(300, 0));
-
+        // Añade el panel
         panel.add(derecho, BorderLayout.EAST);
         return panel;
     }
@@ -418,8 +420,8 @@ public class Principal extends JFrame {
         JPanel form = new JPanel(new GridLayout(0, 2, 5, 5));
 
         // Para insertar un pedido nuevo necesitamos el ID del cliente y del disco
-        JTextField tfClienteId = new JTextField();
-        JTextField tfDiscoId   = new JTextField();
+        JTextField tfClienteId = new JTextField(); // Id del cliente (NO NOMBRE, EL NUMERO DE ID)
+        JTextField tfDiscoId   = new JTextField(); // Id del disco
         JTextField tfCantidad  = new JTextField();
         JComboBox<String> cbEstado = new JComboBox<>(
             new String[]{"pendiente", "completado", "cancelado"}
@@ -434,7 +436,7 @@ public class Principal extends JFrame {
         form.add(new JLabel("Estado:"));      
         form.add(cbEstado);
 
-        // Al seleccionar fila rellena el estado
+        // al seleccionar un pedido en la tabla, rellena el combo con su estado actual
         tablaPedidos.getSelectionModel().addListSelectionListener(e -> {
             int fila = tablaPedidos.getSelectedRow();
             if (fila < 0) return;
@@ -442,7 +444,7 @@ public class Principal extends JFrame {
         });
 
         JPanel botones = new JPanel(new GridLayout(0, 1, 5, 5));
-
+        // Boton insertar
         JButton btnInsertar = new JButton("Nuevo pedido");
         btnInsertar.addActionListener(e -> {
             try {
@@ -453,15 +455,15 @@ public class Principal extends JFrame {
                 Pedido p = new Pedido();
                 p.setClienteId(clienteId);
                 p.setDiscoId(discoId);
-                p.setFecha(LocalDate.now());
+                p.setFecha(LocalDate.now()); // Fecha de hoy automática
                 p.setCantidad(cantidad);
-                // Calculamos el total buscando el precio del disco
+                // busca el disco para calcular su total (precio*cantidad)
                 Disco disco = discoDAO.buscarPorId(discoId);
                 if (disco == null) {
                     JOptionPane.showMessageDialog(this, "No existe ningún disco con ese ID.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                double total = disco.getPrecio() * cantidad;
+                double total = disco.getPrecio() * cantidad; // Calcula el total
                 p.setTotal(total);
                 p.setEstado(cbEstado.getSelectedItem().toString());
 
@@ -475,6 +477,7 @@ public class Principal extends JFrame {
             }
         });
 
+        // --------------------Otros Botones(Igual q en los otros, pero solo existe eliminar o recargar)--------------------------
         JButton btnEliminar = new JButton("Eliminar");
         btnEliminar.addActionListener(e -> {
             int fila = tablaPedidos.getSelectedRow();
@@ -617,7 +620,7 @@ public class Principal extends JFrame {
 
         JButton btnRecargar = new JButton("Recargar lista");
         btnRecargar.addActionListener(e -> cargarUsuarios());
-
+        
         botones.add(btnGuardar);
         botones.add(btnEliminar);
         botones.add(btnRecargar);
